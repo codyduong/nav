@@ -43,9 +43,12 @@ nav(foobar, ['node1', 'node2', 'node3', 0] as const) //=> {list: boolean}
 nav<typeof foobar, ['foo']>(foobar as const, ['foo']) //=> string
 
 // Incorrect Usage ❌
+
+nav({ foo: 'bar' }, ['foo']) //=> { foo: 'bar' }
+//This will actually return 'bar' but will be typed incorrectly.
 // Due to TS inference engine, we can't parse down the object tree
 // if the tuple is not readonly, alternatively use the workaround syntax.
-nav({ foo: 'bar' }, ['foo']) //=> { foo: 'bar' }
+
 
 
 ```
