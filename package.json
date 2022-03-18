@@ -34,12 +34,12 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/codyduong/case-insensitive-object.git"
+    "url": "git+https://github.com/codyduong/nav.git"
   },
   "bugs": {
-    "url": "https://github.com/codyduong/case-insensitive-object/issues"
+    "url": "https://github.com/codyduong/nav/issues"
   },
-  "homepage": "https://github.com/codyduong/case-insensitive-object#readme",
+  "homepage": "https://github.com/codyduong/nav#readme",
   "keywords": [
     "Nav",
     "Navigation",
