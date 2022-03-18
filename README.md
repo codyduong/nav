@@ -28,7 +28,7 @@ const foobar = {
       node3: [{ list: true }],
     },
   },
-};
+} as const;
 
 nav(foobar, ['foo'] as const) //=> string
 nav(foobar, ['foo'] as const, true) //=> string | boolean
