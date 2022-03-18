@@ -1,0 +1,15 @@
+{
+  "compilerOptions": {
+    "strict": false,
+    "allowJs": false,
+    "incremental": true,
+    "target": "es6",
+    "module": "commonJS",
+    "types": ["jest", "node"],
+    "esModuleInterop": true,
+    "outDir": "dist",
+    "declaration": true,
+    "removeComments": true,
+  },
+  "include": ["src/**/*"]
+}
