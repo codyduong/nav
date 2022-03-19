@@ -16,44 +16,36 @@ Written in TypeScript with strong inference engine. Handles all your data for yo
 ```typescript
 nav(root, tuplePath, default) 
 ```
-Returns default when it encounters an error (nonexistent node) or undefined.
+* root - an Object to navigate through
+* tuplePath - a tuple containing keys to navigate through the object with
+* default - the default value to return if encountering an undefined/null value
 
 ```typescript
 import {nav} from '@codyduong/nav';
 
-const foobar = {
-  foo: 'bar',
-  node1: {
-    node2: {
-      node3: [{ list: true }],
-    },
-  },
-} as const;
+const foobar = { foo: 'bar' }
+const foobarAsserted = { foo: 'bar' } as const
 
-nav(foobar, ['foo'] as const) //=> string
-nav(foobar, ['foo'] as const, true) //=> string | boolean
-nav(foobar, ['foo'] as const, true as const) //=> string | true
+// Regular parameters can't gurantee the narrowest type
+nav({ foo: 'bar' }, ['foo']) //=> string
+nav({ foo: 'bar' }, ['foo'], true) //=> string | boolean
 
+// Const assertioned object/default parameters will return the narrowest types.
 nav({ foo: 'bar' } as const, ['foo'] as const) //=> 'bar'
+nav(foobarAsserted as const, ['foo'] as const) //=> 'bar'
+nav(foobarAsserted, ['foo'] as const, true as const) //=> 'bar' | true
 
-nav(foobar, ['node1', 'node2', 'node3'] as const) //=> {list: boolean}[]
-nav(foobar, ['node1', 'node2', 'node3', 0] as const) //=> {list: boolean}
-
-//Workaround for non frozen object/tuple
-nav<typeof foobar, ['foo']>(foobar as const, ['foo']) //=> string
-
-// Incorrect Usage ❌
-// Due to TS inference engine, we can't parse down the object tree
-// if the tuple is not readonly, alternatively use the workaround syntax.
-nav({ foo: 'bar' }, ['foo']) //=> { foo: 'bar' }
-
-
+// The tuple path is the only parameter that is narrowed that can
+// be automatically narrowed by the library. This is a unique result of tuple implemntation in TS.
+nav(foobarAsserted, ['foo'], true as const) //=> 'bar' | true
 ```
-We require the tuple path be frozen in order for TS engine to gurantee the navigation path.
-IE. this utility works very poorly with dynamic tuples, or if you do use dynamic pathing, instead opt to seperate or freeze at
-certain points in your codebase.
 
-A frozen object is not necessary, but if it is frozen, we will be more able to gurantee the end type more specifically. 
+## Idiosyncrasies
+Q: Why do we have to `as const`?<br>
+A: Read more on const assertion in this [TS 3.4 Release](https://www.typescriptlang.org/docs/handbook/release-notes/typescript-3-4.html#const-assertions) or in this [StackOverflow answer](https://stackoverflow.com/a/66993654/17954209). In short, the TS intepreter uses this to narrow types down from type `string` to something narrower such as `foobar`
+
+Q: Why does the tuple not have to be type assertioned?<br>
+A: This is because the tuple is the only type that is dependent on another type, instead derived from the keys of the object.
 
 ## Contributing
 Any contributing is welcome.

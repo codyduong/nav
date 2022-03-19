@@ -38,11 +38,13 @@ type isReturnNodeableAny<
     | ReadonlyArray<any>
     | never
     | undefined
-> = O extends Record<string, infer OV> | Readonly<Record<string, infer OV>>
+> = IsStrictlyAny<O> extends true
+  ? true
+  : O extends Record<string, infer OV> | Readonly<Record<string, infer OV>>
   ? IsStrictlyAny<OV>
   : O extends Array<infer AV> | Readonly<Array<infer AV>>
   ? IsStrictlyAny<AV>
-  : IsStrictlyAny<O>;
+  : false;
 
 type IsRestEmpty<Rest> = Rest extends any[]
   ? RemoveFirstFromTuple<Rest> extends {
@@ -71,15 +73,15 @@ export type navReturnNode<
   Tuple extends ReadonlyArray<any> | undefined,
   Surplus extends Readonly<any> = never
 > = isReturnNodeableAny<O> extends true
-  ? true
+  ? any
   : isReturnNodeableAny<Tuple> extends true
-  ? true
+  ? any
   : Tuple extends
       | [infer First, ...infer Rest]
       | Readonly<[infer First, ...infer Rest]>
   ? First extends keyof O
     ? Rest extends Array<any> | ReadonlyArray<any>
-      ? navReturnNode<O[First], Rest, Surplus>
+      ? navReturnNode<O[First], Rest, Surplus> //We don't check empty array here, since we actually check again 1 layer deeper below
       : O[First]
     : undefined
   : Tuple extends [...infer Rest] | Readonly<[...infer Rest]>
@@ -122,7 +124,7 @@ export function nav<
     | Array<any>
     | Readonly<Record<string, any>>
     | Readonly<Array<any>> = any,
-  I extends Readonly<[...navNode<R>]> = Readonly<[...navNode<R>]>,
+  I extends Readonly<navNode<R>> = Readonly<navNode<R>>,
   D = any
 >(
   root: R,
@@ -138,6 +140,7 @@ export function nav<
           // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
           typeof k == 'number' ? (k < 0 ? root!.length + k : k) : k;
 
+        //@ts-expect-error: We'll catch this error anyway, or if not the end user will handle it.
         root = root[accessor];
       }
       if (root === undefined || root === null) {
