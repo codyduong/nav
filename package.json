@@ -46,7 +46,7 @@
     "Utility"
   ],
   "files": [
-    "dist",
+    "dist/index.*",
     "LICENSE"
   ]
 }
