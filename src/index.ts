@@ -23,7 +23,9 @@ type navNode<T, Surplus = never> = IsStrictlyAny<T> extends true
     : [(number | Surplus)?, ...isNavNodeable<Item>]
   : T extends Record<infer Key, infer Item>
   ? IsStrictlyAny<Item> extends true
-    ? navNode<RemoveAnyFromObject<T>, Key>
+    ? navNode<RemoveAnyFromObject<T>, Key> extends never
+      ? any[]
+      : navNode<RemoveAnyFromObject<T>, Key>
     : [(Key | Surplus)?, ...isNavNodeable<Item>]
   : [Surplus?];
 
