@@ -68,13 +68,13 @@ describe('Navigation', () => {
     expect(nav(Root, ['falsyNumber'] as const, 'fubar' as const)).toBe(0);
   });
   test('Deep Accessor into Undefined Key/Value', () => {
-    expect(nav(Root, ['undefined', 'null'] as const, 'fubar' as const)).toBe(
+    expect(nav(Root, ['undefined', 'null'] as any, 'fubar' as const)).toBe(
       'fubar'
     );
   });
   test('Deep Accessor into Undefined Key/Value w/ Error', () => {
     try {
-      nav(Root, ['undefined', 'null'] as const);
+      nav(Root, ['undefined', 'null'] as any);
     } catch (e) {
       expect(e instanceof TypeError).toBe(true);
     }

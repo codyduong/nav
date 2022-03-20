@@ -8,16 +8,24 @@ type IsStrictlyAny<T> = UnionToIntersection<UnionForAny<T>> extends never
   ? true
   : false;
 
+type RemoveAnyFromObject<T extends Record<string, any>> = {
+  [K in keyof T as IsStrictlyAny<T[K]> extends true ? never : K]: T[K];
+};
+
 // Good enough recursive type... Correctly places all keys at correct depth,
 // but is still possible to call keys on the wrong values.
 // This is a limitation of the keyof T, which unions all the properties at that depth.
-type navNode<T> = IsStrictlyAny<T> extends true
+type navNode<T, Surplus = never> = IsStrictlyAny<T> extends true
   ? any
   : T extends Array<infer Item>
-  ? [number?, ...isNavNodeable<Item>]
+  ? IsStrictlyAny<Item> extends true
+    ? [number?]
+    : [(number | Surplus)?, ...isNavNodeable<Item>]
   : T extends Record<infer Key, infer Item>
-  ? [Key?, ...isNavNodeable<Item>]
-  : [];
+  ? IsStrictlyAny<Item> extends true
+    ? navNode<RemoveAnyFromObject<T>, Key>
+    : [(Key | Surplus)?, ...isNavNodeable<Item>]
+  : [Surplus?];
 
 type isNavNodeable<T> = T extends Array<any>
   ? navNode<T>
@@ -39,9 +47,7 @@ type isReturnNodeableAny<
     | never
     | undefined
 > = IsStrictlyAny<O> extends true
-  ? true
-  : O extends Record<string, infer OV> | Readonly<Record<string, infer OV>>
-  ? IsStrictlyAny<OV>
+  ? true // : O extends Record<string, infer OV> | Readonly<Record<string, infer OV>> ? IsStrictlyAny<OV>
   : O extends Array<infer AV> | Readonly<Array<infer AV>>
   ? IsStrictlyAny<AV>
   : false;
@@ -130,7 +136,11 @@ export function nav<
   root: R,
   path: I,
   def?: D
-): navReturnNode<typeof root, Readonly<typeof path>, NonNullable<typeof def>> {
+): navReturnNode<
+  typeof root,
+  Readonly<typeof path> | typeof path,
+  NonNullable<typeof def>
+> {
   // """Access a nested object in root by item sequence."""
   try {
     if (root) {
@@ -161,3 +171,6 @@ export function nav<
   }
   return def as any;
 }
+
+const path = ['foo', 0, 'bar'];
+const _ = nav({ foo: [{ bar: true }] }, path); //=> true
