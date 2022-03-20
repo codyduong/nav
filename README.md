@@ -48,7 +48,8 @@ nav({ foo: 'bar'}, ['foo']) //=> string
 
 // ❌ If path is not asserted with `as const` it can fail on arrays since it short circuits to the path to (string | number)[]
 const path = ['foo', 0, 'bar']
-nav({ foo: [ { bar: true } ] }, path) // => { bar: boolean; }[] | { bar: boolean; }
+nav({ foo: [ { bar: true } ] }, ['foo', 0, 'bar']) // => { bar: boolean; }[] | { bar: boolean; }
+nav({ foo: [ { bar: true } ] }, path) // <= Path! Argument of type '(string | number)[]' is not assignable to parameter of type...
 
 // ✔️ Always assert the object and path.
 const path = ['foo', 0, 'bar'] as const

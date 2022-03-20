@@ -171,6 +171,3 @@ export function nav<
   }
   return def as any;
 }
-
-const path = ['foo', 0, 'bar'];
-const _ = nav({ foo: [{ bar: true }] }, path); //=> true
