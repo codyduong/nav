@@ -32,7 +32,7 @@ type foobarAPIReturn = Promise<{
   array: {
     name: `name_${string}`
     id: `ID_ABXDe_${string}`
-  }
+  }[]
 }>;
 const foobar: foobarAPIReturn = await foobarAPI();
 const results = nav(foobar, ['foo'] as const); //=> 'bar'
