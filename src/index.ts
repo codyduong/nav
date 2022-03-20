@@ -65,10 +65,10 @@ type IsRestEmpty<Rest> = Rest extends any[]
   : false;
 
 type NonNullableExtended<O> = IsStrictlyAny<O> extends true
-  ? never
+  ? any
   : O extends Record<string, any> | Readonly<Record<string, any>>
   ? {
-      -readonly [K in keyof O]: NonNullable<O[K]>;
+      [K in keyof O]: NonNullable<O[K]>;
     }
   : O extends Array<any> | ReadonlyArray<any>
   ? NonNullable<O>
