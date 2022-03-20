@@ -150,7 +150,9 @@ export function nav<
           // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
           typeof k == 'number' ? (k < 0 ? root!.length + k : k) : k;
 
-        //@ts-expect-error: We'll catch this error anyway, or if not the end user will handle it.
+        // This next line is needed in TS4.6.2 but breaks ts-jest
+        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+        //@ts-ignore: We'll catch this error anyway, or if not the end user will handle it.
         root = root[accessor];
       }
       if (root === undefined || root === null) {
