@@ -32,7 +32,7 @@ nav({ foo: 'bar' }, ['foo'], true) //=> string | boolean
 
 // Const assertioned object/default parameters will return the narrowest types.
 nav({ foo: 'bar' } as const, ['foo'] as const) //=> 'bar'
-nav(foobarAsserted as const, ['foo'] as const) //=> 'bar'
+nav(foobarAsserted, ['foo'] as const) //=> 'bar'
 nav(foobarAsserted, ['foo'] as const, true as const) //=> 'bar' | true
 
 // The tuple path is the only parameter that is narrowed that can
