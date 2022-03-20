@@ -114,8 +114,8 @@ export type navReturnNode<
 /**
  *
  * @param {Object} [root] The object
- * @param {any[]} [path] A tuple to navigate down the root object, must be readonly for Type Inference
- * @param def Default path to navigate to
+ * @param {any[]} [path] A tuple to navigate down the root object
+ * @param def Default if node is not found
  * @returns
  */
 export function nav<
@@ -161,77 +161,3 @@ export function nav<
   }
   return def as any;
 }
-
-const navNodeTestObj: navNodeTestObj = {
-  matrix: [
-    [1, 2, 3],
-    [4, 5, 6],
-    [7, 8, 9],
-  ],
-  nestedObj: {
-    nestedObj2a: 'a',
-    nestedObj2b: 'b',
-    boolean: true,
-  },
-  objectInArray: [],
-};
-type navNodeTestObj = {
-  matrix: [[1, 2, 3], [4, 5, 6], [7, 8, 9]];
-  nestedObj: {
-    nestedObj2a: 'a';
-    nestedObj2b: 'b';
-    boolean: boolean;
-  };
-  objectInArray: Array<{ object: { objectChild: 'deep!' } }>;
-};
-type navNodeTest = navNode<navNodeTestObj>;
-const _navNodeTest1: navNodeTest = ['matrix', 1, 2];
-const _navNodeTest2: navNodeTest = ['nestedObj', 'nestedObj2a'];
-const _navNodeTest3: navNodeTest = [
-  'objectInArray',
-  1,
-  'object',
-  'objectChild',
-];
-const _navNodeTest4 = nav<navNodeTestObj, ['matrix', 1]>(navNodeTestObj, [
-  'matrix',
-  1,
-]);
-const _navNodeTest5 = nav(
-  navNodeTestObj,
-  ['matrix', 1] as const,
-  'what' as const
-);
-const _navNodeTest6 = nav({ foo: 'bar' }, ['foo']);
-const foobar = { foo: 'bar' };
-const _navNodeTest7 = nav<typeof foobar, ['foo']>({ foo: 'bar' }, ['foo']);
-const _navNodeTest8 = nav<typeof foobar, ['foo']>({ foo: 'bar' }, ['foo']);
-const foobar2 = {
-  foo: 'bar',
-  node1: {
-    node2: {
-      node3: [{ list: true }],
-    },
-  },
-};
-const _navNodeTest9 = nav(foobar2, ['node1', 'node2', 'node3'] as const);
-
-type testArray = ['error', 1, 'five'];
-
-export type TupleToPath<Tuple extends any[]> = Tuple extends [
-  infer First,
-  ...infer Rest
-]
-  ? First extends string | number
-    ? Rest extends Array<string | number>
-      ? `${First}${TupleToPath<Rest> extends string | number
-          ? `.${TupleToPath<Rest>}`
-          : ''}`
-      : `${First}`
-    : undefined
-  : Tuple extends [...infer Rest]
-  ? Rest[0]
-  : false;
-
-type _testResult = TupleToPath<testArray>;
-//type _testResult2 = TupleToPath<navNode<navNodeTestObj>>;
