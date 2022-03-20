@@ -37,7 +37,12 @@ nav(foobarAsserted, ['foo'] as const, true as const) //=> 'bar' | true
 
 // The tuple path is the only parameter that is narrowed that can
 // be automatically narrowed by the library. This is a unique result of tuple implemntation in TS.
+// But it is recommended to stick to asserting to the tuple path, see below example
 nav(foobarAsserted, ['foo'], true as const) //=> 'bar' | true
+
+// However! This is currently broken on navigating through arrays/tuples
+nav({ foo: [ { bar: true } ] } as const, ['foo', 0, 'bar']) //=> undefined
+nav({ foo: [ { bar: true } ] } as const, ['foo', 0, 'bar'] as const) //=> true
 ```
 
 ## Idiosyncrasies
