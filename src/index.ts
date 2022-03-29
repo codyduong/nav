@@ -26,7 +26,9 @@ type navNode<T, Surplus = never> = IsStrictlyAny<T> extends true
     ? navNode<RemoveAnyFromObject<T>, Key> extends never
       ? any[]
       : navNode<RemoveAnyFromObject<T>, Key>
-    : [(Key | Surplus)?, ...isNavNodeable<Item>]
+    : {
+        [K in keyof T]: [(K | Surplus)?, ...isNavNodeable<T[K]>];
+      }[keyof T]
   : [Surplus?];
 
 type isNavNodeable<T> = T extends Array<any>
@@ -141,7 +143,7 @@ export function nav<
 ): navReturnNode<
   typeof root,
   Readonly<typeof path> | typeof path,
-  NonNullable<typeof def>
+  IsStrictlyAny<D> extends true ? never : D
 > {
   // """Access a nested object in root by item sequence."""
   try {

@@ -1,7 +1,7 @@
 {
   "name": "@codyduong/nav",
   "description": "Nav utility with strong TS inference tooling",
-  "version": "0.1.5",
+  "version": "0.2.0",
   "author": "Cody Duong",
   "license": "MIT",
   "main": "dist/index.js",
