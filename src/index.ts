@@ -12,9 +12,6 @@ type RemoveAnyFromObject<T extends Record<string, any>> = {
   [K in keyof T as IsStrictlyAny<T[K]> extends true ? never : K]: T[K];
 };
 
-// Good enough recursive type... Correctly places all keys at correct depth,
-// but is still possible to call keys on the wrong values.
-// This is a limitation of the keyof T, which unions all the properties at that depth.
 type navNode<T, Surplus = never> = IsStrictlyAny<T> extends true
   ? any
   : T extends Array<infer Item>
